@@ -8,7 +8,8 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { getUser, getUsers, logout } from '../api/api'
+import { getUser, logout } from '../api/api'
+import SuperAdminUsers from './super_admin/SuperAdminUsers'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
@@ -16,14 +17,11 @@ const { SubMenu } = Menu
 export default function Dashboard() {
   const [collapsed, setCollapsed] = useState(false)
   const [user, setUser] = useState('loading...')
-  const [users, setUsers] = useState('loading...')
 
   const setup = useCallback(async () => {
     try {
       let res = await getUser()
       setUser(res.data)
-      res = await getUsers()
-      setUsers(res.data)
     } catch (err) {
       window.location.replace('/login')
     }
@@ -32,6 +30,7 @@ export default function Dashboard() {
   useEffect(() => {
     setup()
   }, [setup])
+  
   const onCollapse = (collapsed: boolean) => {
     console.log(collapsed)
     setCollapsed(collapsed)
@@ -46,12 +45,16 @@ export default function Dashboard() {
             placeItems: 'center',
             gap: '20px',
           }}>
-          <div
-            style={{ fontWeight: 'bold', color: 'white', fontSize: '2em' }}>
+          <div style={{ fontWeight: 'bold', color: 'white', fontSize: '2em' }}>
             NAME
           </div>
           <div
-            style={{ fontWeight: 'bold', color: 'white', fontSize: '1.2em', marginLeft: 'auto' }}>
+            style={{
+              fontWeight: 'bold',
+              color: 'white',
+              fontSize: '1.2em',
+              marginLeft: 'auto',
+            }}>
             {user}
           </div>
           <Button
@@ -100,14 +103,10 @@ export default function Dashboard() {
             </h1>
             <div>
               Users:
-              <pre>{JSON.stringify(users, null, 2)}</pre>
+              <SuperAdminUsers/>
             </div>
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Footer content: Lorem ipsum dolor sit amet consectetur adipisicing
-          elit.
-        </Footer>
       </Layout>
     </Layout>
   )
