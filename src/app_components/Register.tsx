@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { login, register, setAccessToken, setRefreshToken } from '../api/api'
+import { login, register } from '../api/api'
 import 'antd/dist/antd.css'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
@@ -20,10 +20,7 @@ export default function RegisterForm() {
     try {
       await register(email, password)
       setErrMsg('')
-      const res = await login(email, password)
-      const { access_token, refresh_token } = res.data
-      setAccessToken(access_token)
-      setRefreshToken(refresh_token)
+      await login(email, password)
       setErrMsg('')
       window.location.replace('/dashboard')
     } catch (err) {

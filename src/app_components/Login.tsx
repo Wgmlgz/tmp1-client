@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { login, setAccessToken, setRefreshToken } from '../api/api'
+import { login } from '../api/api'
 import 'antd/dist/antd.css'
 import { Form, Input, Button, Alert } from 'antd'
 import { FC, useState } from 'react'
@@ -18,9 +18,6 @@ const LoginForm: FC = () => {
     console.log(email, password)
     try {
       const res = await login(email, password)
-      const { access_token, refresh_token } = res.data
-      setAccessToken(access_token)
-      setRefreshToken(refresh_token)
       setErrMsg('')
       window.location.replace('/dashboard')
     } catch (err) {
