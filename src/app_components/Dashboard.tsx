@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Button, Layout, Menu } from 'antd'
-import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons'
 import { getUser, logout } from '../api/api'
 import SuperAdminUsers from './super_admin/SuperAdminUsers'
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Link,
+  useParams,
+  Routes,
+} from 'react-router-dom'
+import Categories from './categories/Categories'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
@@ -30,7 +33,7 @@ export default function Dashboard() {
   useEffect(() => {
     setup()
   }, [setup])
-  
+
   const onCollapse = (collapsed: boolean) => {
     console.log(collapsed)
     setCollapsed(collapsed)
@@ -73,13 +76,13 @@ export default function Dashboard() {
         <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
           <div className='logo' />
           <Menu theme='dark' defaultSelectedKeys={['1']} mode='inline'>
-            <Menu.Item key='1' icon={<PieChartOutlined />}>
-              Option 1
+            <Menu.Item key='1' icon={<UserOutlined />}>
+              <Link to='/dashboard/users'>Users</Link>
             </Menu.Item>
-            <Menu.Item key='2' icon={<DesktopOutlined />}>
-              Option 2
+            <Menu.Item key='2' icon={<UnorderedListOutlined />}>
+              <Link to='/dashboard/categories'>Categories</Link>
             </Menu.Item>
-            <SubMenu key='sub1' icon={<UserOutlined />} title='User'>
+            {/* <SubMenu key='sub1' icon={<UserOutlined />} title='User'>
               <Menu.Item key='3'>Tom</Menu.Item>
               <Menu.Item key='4'>Bill</Menu.Item>
               <Menu.Item key='5'>Alex</Menu.Item>
@@ -90,20 +93,16 @@ export default function Dashboard() {
             </SubMenu>
             <Menu.Item key='9' icon={<FileOutlined />}>
               Files
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu>
         </Sider>
         <Content style={{ margin: '20px' }}>
           <div>
-            <h1>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-              deserunt, nostrum ex iure rem tempore, culpa veniam officiis
-              asperiores consectetur ab modi laudantium. Pariatur numquam soluta
-              suscipit omnis facilis vitae.
-            </h1>
             <div>
-              Users:
-              <SuperAdminUsers/>
+              <Routes>
+                <Route path='/users' element={<SuperAdminUsers />} />
+                <Route path='/categories' element={<Categories />} />
+              </Routes>
             </div>
           </div>
         </Content>
