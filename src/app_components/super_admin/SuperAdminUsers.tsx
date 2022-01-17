@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Table } from 'antd'
+import { Alert, Card, Checkbox, message, Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import axios from 'axios'
 import React, { FC, useEffect, useState } from 'react'
@@ -12,8 +12,6 @@ export interface IUser {
 }
 
 const SuperAdminUsers: FC = () => {
-  const [err_msg, setErrMsg] = useState('')
-  const [done_msg, setDoneMsg] = useState('')
   const [users, setUsers] = useState<IUser[]>([])
 
   const setup = async () => {
@@ -22,7 +20,7 @@ const SuperAdminUsers: FC = () => {
       setUsers(res.data)
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err.response?.data)
+        message.error(err.response?.data)
       }
     }
   }
@@ -51,13 +49,10 @@ const SuperAdminUsers: FC = () => {
                 const new_users = [...users]
                 new_users[index].admin = new_admin
                 setUsers(new_users)
-                setDoneMsg('Saved')
-                setTimeout(() => {
-                  setDoneMsg('')
-                }, 2000)
+                message.success('Saved')
               } catch (err) {
                 if (axios.isAxiosError(err)) {
-                  setErrMsg(err.response?.data)
+                  message.error(err.response?.data)
                 }
               }
             }}
@@ -80,20 +75,9 @@ const SuperAdminUsers: FC = () => {
 
   return (
     <div style={{ display: 'grid', width: 'fit-content', gap: '20px' }}>
-      <div style={{height: '50px'}}>
-
-      {err_msg && (
-        <Alert type='error' message={err_msg}>
-          aboba
-        </Alert>
-      )}
-      {done_msg && (
-        <Alert type='success' message={done_msg}>
-          aboba
-        </Alert>
-      )}
-      </div>
-      <Table dataSource={users} columns={columns} />
+      <Card title='All users'>
+        <Table dataSource={users} columns={columns} />
+      </Card>
     </div>
   )
 }
