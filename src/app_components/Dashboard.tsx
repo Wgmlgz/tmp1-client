@@ -13,6 +13,7 @@ import {
   Routes,
 } from 'react-router-dom'
 import Categories from './categories/Categories'
+import Products from './products/Products'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
@@ -82,6 +83,9 @@ export default function Dashboard() {
             <Menu.Item key='2' icon={<UnorderedListOutlined />}>
               <Link to='/dashboard/categories'>Categories</Link>
             </Menu.Item>
+            <Menu.Item key='3' icon={<UnorderedListOutlined />}>
+              <Link to='/dashboard/products'>Products</Link>
+            </Menu.Item>
             {/* <SubMenu key='sub1' icon={<UserOutlined />} title='User'>
               <Menu.Item key='3'>Tom</Menu.Item>
               <Menu.Item key='4'>Bill</Menu.Item>
@@ -102,6 +106,7 @@ export default function Dashboard() {
               <Routes>
                 <Route path='/users' element={<SuperAdminUsers />} />
                 <Route path='/categories' element={<Categories />} />
+                <Route path='/products' element={<Products />} />
               </Routes>
             </div>
           </div>
