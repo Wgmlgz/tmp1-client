@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Button, Layout, Menu } from 'antd'
-import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons'
+import {
+  UnorderedListOutlined,
+  UserOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons'
 import { getUser, logout } from '../api/api'
 import SuperAdminUsers from './super_admin/SuperAdminUsers'
 import {
@@ -83,7 +87,7 @@ export default function Dashboard() {
             <Menu.Item key='2' icon={<UnorderedListOutlined />}>
               <Link to='/dashboard/categories'>Categories</Link>
             </Menu.Item>
-            <Menu.Item key='3' icon={<UnorderedListOutlined />}>
+            <Menu.Item key='3' icon={<AppstoreOutlined />}>
               <Link to='/dashboard/products'>Products</Link>
             </Menu.Item>
             {/* <SubMenu key='sub1' icon={<UserOutlined />} title='User'>
