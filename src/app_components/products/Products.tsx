@@ -5,16 +5,24 @@ import {
   Input,
   InputNumber,
   message,
+  Select,
   Table,
   Tag,
 } from 'antd'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Collapse } from 'antd'
-import { createProduct, getProducts, products_url } from '../../api/api'
+import {
+  createProduct,
+  getCategories,
+  getProducts,
+  products_url,
+} from '../../api/api'
 import axios from 'axios'
 import { ColumnsType } from 'antd/lib/table'
+import { ICategory, ICategoryFull } from '../categories/Categories'
 
 const { Panel } = Collapse
+const { Option } = Select
 
 export interface IProduct {
   type?: string
@@ -51,19 +59,36 @@ let imgs: FileList | undefined = undefined
 const Products = () => {
   const [tags, setTags] = useState<string[]>([])
   const [products, setProducts] = useState<IProductFull[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+
+  const [active_products, setActiveProducts] = useState<IProductFull[]>([])
+  const [active_category, setActiveCategory] = useState<string>('')
+
   const input_tags_ref = useRef<Input>(null)
 
+  const refreshProducts = (products: IProductFull[], category: string) => {
+    setActiveProducts(
+      products.filter(product => !category || product.category === category)
+    )
+  }
   const fetchProducts = async () => {
     try {
+      const categories_res = await getCategories()
+      setCategories(
+        categories_res.data.map((category: ICategory) => category.name)
+      )
+
       const res = await getProducts()
       setProducts(res.data)
-      console.log(res.data)
     } catch (err) {
       if (axios.isAxiosError(err)) {
         message.error(err.response?.data)
       }
     }
   }
+  useEffect(() => {
+    refreshProducts(products, active_category)
+  }, [active_category, products])
 
   useEffect(() => {
     fetchProducts()
@@ -74,7 +99,8 @@ const Products = () => {
       dataIndex: 'img',
       key: 'type',
       render: (text, record, index) =>
-        record.imgs_small && (
+        record.imgs_small &&
+        record.imgs_small[0] && (
           <img src={`${products_url}/img/${record.imgs_small[0]}`} alt='img' />
         ),
     },
@@ -112,7 +138,11 @@ const Products = () => {
         <Input placeholder='Type' />
       </Form.Item>
       <Form.Item label='Category' name='category'>
-        <Input placeholder='Category' />
+        <Select>
+          {categories.map(s => (
+            <Option value={s}>{s}</Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item label='Article' name='article'>
         <Input placeholder='Article' />
@@ -252,6 +282,7 @@ const Products = () => {
       }
       console.log(product)
       await createProduct(product)
+      await fetchProducts()
       message.success('Product created')
     } catch (err) {
       console.log(err)
@@ -262,7 +293,6 @@ const Products = () => {
           .forEach(msg => message.error(msg))
       }
     }
-    // console.log(values)
   }
   return (
     <div style={{ display: 'flex', gap: '20px' }}>
@@ -331,8 +361,19 @@ const Products = () => {
         </Card>
       </div>
       <div style={{ width: 'fit-content' }}>
-        <Card title='All categories'>
-          <Table dataSource={products} columns={columns} />
+        <Card title='All products'>
+          <Select
+            placeholder='Filter by category'
+            style={{ width: '200px' }}
+            onChange={e => {
+              setActiveCategory(e)
+            }}>
+            <Option value=''>None</Option>
+            {categories.map(s => (
+              <Option value={s}>{s}</Option>
+            ))}
+          </Select>
+          <Table dataSource={active_products} columns={columns} />
         </Card>
       </div>
     </div>
