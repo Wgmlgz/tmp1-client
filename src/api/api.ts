@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ICategory } from '../app_components/categories/Categories'
-import { IProduct } from '../app_components/products/Products'
+import { IProduct } from '../app_components/products/ProductsForm'
 
 export const url = process.env.REACT_APP_SERVER_URL
 export const auth_url = `${url}/api/auth`
