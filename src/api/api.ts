@@ -98,11 +98,5 @@ export const createProduct = (product: IProduct) => {
 
   fd.append('tags', JSON.stringify(product.tags))
   fd.append('videos', JSON.stringify(product.videos))
-
-  // category.img && fd.append('file', category.img)
-  // category.name && fd.append('name', category.name)
-  // category.descriptrion && fd.append('descriptrion', category.descriptrion)
-  // category.tags && fd.append('tags', JSON.stringify(category.tags))
-  // category.parent && fd.append('parent', category.parent)
   return axios.post(`${products_url}`, fd, config)
 }

@@ -8,10 +8,11 @@ import {
   Table,
   Tag,
 } from 'antd'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Collapse } from 'antd'
-import { createProduct } from '../../api/api'
+import { createProduct, getProducts, products_url } from '../../api/api'
 import axios from 'axios'
+import { ColumnsType } from 'antd/lib/table'
 
 const { Panel } = Collapse
 
@@ -41,11 +42,69 @@ export interface IProduct {
   user_changed_id?: string
 }
 
+export interface IProductFull extends IProduct {
+  _id: string
+}
+
 let imgs: FileList | undefined = undefined
 
 const Products = () => {
   const [tags, setTags] = useState<string[]>([])
+  const [products, setProducts] = useState<IProductFull[]>([])
   const input_tags_ref = useRef<Input>(null)
+
+  const fetchProducts = async () => {
+    try {
+      const res = await getProducts()
+      setProducts(res.data)
+      console.log(res.data)
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        message.error(err.response?.data)
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+  const columns: ColumnsType<IProductFull> = [
+    {
+      title: 'Image',
+      dataIndex: 'img',
+      key: 'type',
+      render: (text, record, index) =>
+        record.imgs_small && (
+          <img src={`${products_url}/img/${record.imgs_small[0]}`} alt='img' />
+        ),
+    },
+
+    {
+      title: 'Article',
+      dataIndex: 'article',
+      key: 'article',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Buy price',
+      dataIndex: 'buy_price',
+      key: 'buy_price',
+    },
+    {
+      title: 'Delivery price',
+      dataIndex: 'delivery_price',
+      key: 'delivery_price',
+    },
+    {
+      title: 'Count',
+      dataIndex: 'count',
+      key: 'count',
+    },
+  ]
 
   const Data = () => (
     <>
@@ -271,11 +330,11 @@ const Products = () => {
           </Form>
         </Card>
       </div>
-      {/* <div style={{ width: 'fit-content' }}>
+      <div style={{ width: 'fit-content' }}>
         <Card title='All categories'>
-          <Table dataSource={categories} columns={columns} />
+          <Table dataSource={products} columns={columns} />
         </Card>
-      </div> */}
+      </div>
     </div>
   )
 }
