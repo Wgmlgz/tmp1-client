@@ -1,6 +1,17 @@
-import { Button, Card, Form, Input, InputNumber, Table, Tag } from 'antd'
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Table,
+  Tag,
+} from 'antd'
 import React, { useCallback, useRef, useState } from 'react'
 import { Collapse } from 'antd'
+import { createProduct } from '../../api/api'
+import axios from 'axios'
 
 const { Panel } = Collapse
 
@@ -138,7 +149,7 @@ const Products = () => {
     </>
   )
 
-  const onFinish = ({
+  const onFinish = async ({
     address,
     article,
     brand,
@@ -158,39 +169,40 @@ const Products = () => {
     yt2,
     yt3,
   }: any) => {
-    if (
-      name === undefined ||
-      buy_price === undefined ||
-      delivery_price === undefined ||
-      height === undefined ||
-      length === undefined ||
-      width === undefined ||
-      weight === undefined
-    )
-      return
-    const videos = [yt1, yt2, yt3]
-    const product: IProduct = {
-      type,
-      category,
-      article,
-      name,
-      description,
-      tags,
-      imgs,
-      videos,
-      buy_price,
-      delivery_price,
-      height,
-      length,
-      width,
-      weight,
-      brand,
-      count,
-      address,
-      provider,
-    }
-    console.log(product)
+    try {
+      const videos = [yt1, yt2, yt3].filter(x => x)
+      const product: IProduct = {
+        type,
+        category,
+        article,
+        name,
+        description,
+        tags,
+        imgs,
+        videos,
+        buy_price,
+        delivery_price,
+        height,
+        length,
+        width,
+        weight,
+        brand,
+        count,
+        address,
+        provider,
+      }
+      console.log(product)
+      await createProduct(product)
+      message.success('Product created')
+    } catch (err) {
+      console.log(err)
 
+      if (axios.isAxiosError(err)) {
+        String(err.response?.data)
+          .split(',')
+          .forEach(msg => message.error(msg))
+      }
+    }
     // console.log(values)
   }
   return (

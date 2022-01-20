@@ -1,11 +1,13 @@
 import axios from 'axios'
 import { ICategory } from '../app_components/categories/Categories'
+import { IProduct } from '../app_components/products/Products'
 
 export const url = process.env.REACT_APP_SERVER_URL
 export const auth_url = `${url}/api/auth`
 export const user_url = `${url}/api/user`
 export const super_admin_url = `${url}/api/super_admin`
 export const categories_url = `${url}/api/categories`
+export const products_url = `${url}/api/products`
 
 axios.interceptors.request.use(
   config => {
@@ -57,4 +59,50 @@ export const createCategory = (category: ICategory) => {
   category.tags && fd.append('tags', JSON.stringify(category.tags))
   category.parent && fd.append('parent', category.parent)
   return axios.post(`${categories_url}`, fd, config)
+}
+
+export const getProducts = () => axios.get(`${products_url}`)
+export const removeProduct = (id: string) =>
+  axios.delete(`${products_url}/${id}`)
+export const createProduct = (product: IProduct) => {
+  const config = { headers: { 'Content-Type': 'multipart/form-data' } }
+  let fd = new FormData()
+
+  if (product.imgs) {
+    Array.from(product.imgs).forEach(file => fd.append('imgs', file))
+  }
+
+  ;[
+    'type',
+    'category',
+    'article',
+    'name',
+    'description',
+    'buy_price',
+    'delivery_price',
+    'height',
+    'length',
+    'width',
+    'weight',
+    'brand',
+    'count',
+    'address',
+    'provider',
+  ].forEach(field => {
+    // @ts-ignore
+    if (product.hasOwnProperty(field) && product[field] !== undefined) {
+      // @ts-ignore
+      fd.append(field, product[field])
+    }
+  })
+
+  fd.append('tags', JSON.stringify(product.tags))
+  fd.append('videos', JSON.stringify(product.videos))
+
+  // category.img && fd.append('file', category.img)
+  // category.name && fd.append('name', category.name)
+  // category.descriptrion && fd.append('descriptrion', category.descriptrion)
+  // category.tags && fd.append('tags', JSON.stringify(category.tags))
+  // category.parent && fd.append('parent', category.parent)
+  return axios.post(`${products_url}`, fd, config)
 }
