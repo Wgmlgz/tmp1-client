@@ -49,11 +49,19 @@ export interface IProductFull extends IProduct {
 
 interface Props {
   onSubmit: (product: IProduct) => any
+  onCancel?: () => any
   header: string
   button: string
+  product?: IProductFull
 }
 
-const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
+const ProductsForm: FC<Props> = ({
+  onSubmit,
+  onCancel,
+  header,
+  button,
+  product,
+}) => {
   const [tags, setTags] = useState<string[]>([])
   const [imgs, setImgs] = useState<FileList>()
   const [categories, setCategories] = useState<string[]>([])
@@ -112,9 +120,10 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
         address,
         provider,
       }
-      console.log(product)
-      await createProduct(product)
-      message.success('Product created')
+      onSubmit(product)
+      // console.log(product)
+      // await createProduct(product)
+      // message.success('Product created')
     } catch (err) {
       if (axios.isAxiosError(err)) {
         String(err.response?.data)
@@ -131,17 +140,17 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
           <Collapse defaultActiveKey={['1']}>
             <Panel header='Data' key='1'>
               <Form.Item label='Type' name='type'>
-                <Input placeholder='Type' />
+                <Input defaultValue={product?.type} placeholder='Type' />
               </Form.Item>
               <Form.Item label='Category' name='category'>
-                <Select>
+                <Select defaultValue={product?.category}>
                   {categories.map(s => (
                     <Option value={s}>{s}</Option>
                   ))}
                 </Select>
               </Form.Item>
               <Form.Item label='Article' name='article'>
-                <Input placeholder='Article' />
+                <Input defaultValue={product?.article} placeholder='Article' />
               </Form.Item>
             </Panel>
             <Panel header='Description' key='2'>
@@ -149,10 +158,13 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
                 label='Name'
                 name='name'
                 rules={[{ required: true, message: 'Please input name!' }]}>
-                <Input placeholder='Name' />
+                <Input defaultValue={product?.name} placeholder='Name' />
               </Form.Item>
               <Form.Item label='Description' name='description'>
-                <Input.TextArea placeholder='Description' />
+                <Input.TextArea
+                  defaultValue={product?.description}
+                  placeholder='Description'
+                />
               </Form.Item>
               <Form.Item label='Tags'>
                 {tags.map(tag => (
@@ -161,6 +173,7 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
               </Form.Item>
               <Form.Item name='tags'>
                 <Input
+                  defaultValue={product?.tags?.join(',')}
                   ref={input_tags_ref}
                   placeholder='Comma separated tags'
                   type='text'
@@ -191,13 +204,22 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
                 />
               </Form.Item>
               <Form.Item label='Youtube video 1' name='yt1'>
-                <Input placeholder='Youtube video 1' />
+                <Input
+                  defaultValue={product?.videos?.at(0)}
+                  placeholder='Youtube video 1'
+                />
               </Form.Item>
               <Form.Item label='Youtube video 2' name='yt2'>
-                <Input placeholder='Youtube video 2' />
+                <Input
+                  defaultValue={product?.videos?.at(1)}
+                  placeholder='Youtube video 2'
+                />
               </Form.Item>
               <Form.Item label='Youtube video 3' name='yt3'>
-                <Input placeholder='Youtube video 3' />
+                <Input
+                  defaultValue={product?.videos?.at(2)}
+                  placeholder='Youtube video 3'
+                />
               </Form.Item>
             </Panel>
             <Panel header='Prices' key='4'>
@@ -207,7 +229,10 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
                 rules={[
                   { required: true, message: 'Please input buy price!' },
                 ]}>
-                <InputNumber placeholder='Buy price' />
+                <InputNumber
+                  defaultValue={product?.buy_price}
+                  placeholder='Buy price'
+                />
               </Form.Item>
               <Form.Item
                 label='Delivery price'
@@ -215,7 +240,10 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
                 rules={[
                   { required: true, message: 'Please input delivery price!' },
                 ]}>
-                <InputNumber placeholder='Delivery price' />
+                <InputNumber
+                  defaultValue={product?.delivery_price}
+                  placeholder='Delivery price'
+                />
               </Form.Item>
             </Panel>
             <Panel header='Dimentions' key='5'>
@@ -223,39 +251,57 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
                 label='Height'
                 name='height'
                 rules={[{ required: true, message: 'Please input height!' }]}>
-                <InputNumber placeholder='Height' />
+                <InputNumber
+                  defaultValue={product?.height}
+                  placeholder='Height'
+                />
               </Form.Item>
               <Form.Item
                 label='Length'
                 name='length'
                 rules={[{ required: true, message: 'Please input length!' }]}>
-                <InputNumber placeholder='Length' />
+                <InputNumber
+                  defaultValue={product?.length}
+                  placeholder='Length'
+                />
               </Form.Item>
               <Form.Item
                 label='Width'
                 name='width'
                 rules={[{ required: true, message: 'Please input width!' }]}>
-                <InputNumber placeholder='Width' />
+                <InputNumber
+                  defaultValue={product?.width}
+                  placeholder='Width'
+                />
               </Form.Item>
               <Form.Item
                 label='Weight'
                 name='weight'
                 rules={[{ required: true, message: 'Please input weight!' }]}>
-                <InputNumber placeholder='Weight' />
+                <InputNumber
+                  defaultValue={product?.weight}
+                  placeholder='Weight'
+                />
               </Form.Item>
             </Panel>
             <Panel header='Origins' key='6'>
               <Form.Item label='Brand' name='brand'>
-                <Input placeholder='Brand' />
+                <Input defaultValue={product?.brand} placeholder='Brand' />
               </Form.Item>
               <Form.Item label='Count' name='count'>
-                <InputNumber placeholder='Count' />
+                <InputNumber
+                  defaultValue={product?.count}
+                  placeholder='Count'
+                />
               </Form.Item>
               <Form.Item label='Provider' name='provider'>
-                <Input placeholder='Provider' />
+                <Input
+                  defaultValue={product?.provider}
+                  placeholder='Provider'
+                />
               </Form.Item>
               <Form.Item label='Address' name='address'>
-                <Input placeholder='Address' />
+                <Input defaultValue={product?.address} placeholder='Address' />
               </Form.Item>
             </Panel>
           </Collapse>
@@ -264,6 +310,15 @@ const ProductsForm: FC<Props> = ({ onSubmit, header, button }) => {
             <Button style={{ width: '100%' }} type='primary' htmlType='submit'>
               {button}
             </Button>
+          </Form.Item>
+          <Form.Item>
+            {onCancel && (
+              <Button
+                style={{ width: '100%' }}
+                onClick={onCancel}>
+                Cancel
+              </Button>
+            )}
           </Form.Item>
         </Form>
       </Card>

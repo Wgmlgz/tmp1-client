@@ -1,10 +1,11 @@
-import { Card, message, Select, Table } from 'antd'
+import { Button, Card, message, Select, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import {
   createProduct,
   getCategories,
   getProducts,
   products_url,
+  updateProduct,
 } from '../../api/api'
 import axios from 'axios'
 import { ColumnsType } from 'antd/lib/table'
@@ -19,6 +20,9 @@ const Products = () => {
 
   const [active_products, setActiveProducts] = useState<IProductFull[]>([])
   const [active_category, setActiveCategory] = useState<string>('')
+
+  const [edited_product_id, setEditedProductId] = useState<string>('')
+  const [edited_product, setEditedProduct] = useState<IProductFull>()
 
   const refreshProducts = (products: IProductFull[], category: string) => {
     setActiveProducts(
@@ -47,6 +51,9 @@ const Products = () => {
   useEffect(() => {
     fetchProducts()
   }, [])
+
+
+  
   const columns: ColumnsType<IProductFull> = [
     {
       title: 'Image',
@@ -62,16 +69,24 @@ const Products = () => {
           />
         ),
     },
-
     {
       title: 'Article',
       dataIndex: 'article',
       key: 'article',
     },
     {
-      title: 'Name',
+      title: 'Name (click to edit)',
       dataIndex: 'name',
       key: 'name',
+      render: (text, record, index) => (
+        <Button
+          onClick={() => {
+            setEditedProductId(record._id)
+            setEditedProduct(record)
+          }}>
+          {record.name}
+        </Button>
+      ),
     },
     {
       title: 'Buy price',
@@ -91,41 +106,82 @@ const Products = () => {
   ]
 
   return (
-    <div style={{ display: 'flex', gap: '20px' }}>
-      <ProductsForm
-        header='Create new product'
-        button='Create'
-        onSubmit={async product => {
-          try {
-            await createProduct(product)
-            await fetchProducts()
-            message.success('Product created')
-          } catch (err) {
-            if (axios.isAxiosError(err)) {
-              String(err.response?.data)
-                .split(',')
-                .forEach(msg => message.error(msg))
+    <>
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <ProductsForm
+          header='Create new product'
+          button='Create'
+          onSubmit={async product => {
+            try {
+              await createProduct(product)
+              await fetchProducts()
+              message.success('Product created')
+            } catch (err) {
+              if (axios.isAxiosError(err)) {
+                String(err.response?.data)
+                  .split(',')
+                  .forEach(msg => message.error(msg))
+              }
             }
-          }
-        }}
-      />
-      <div style={{ width: 'fit-content' }}>
-        <Card title='All products'>
-          <Select
-            placeholder='Filter by category'
-            style={{ width: '200px' }}
-            onChange={e => {
-              setActiveCategory(e)
-            }}>
-            <Option value=''>None</Option>
-            {categories.map(s => (
-              <Option value={s}>{s}</Option>
-            ))}
-          </Select>
-          <Table dataSource={active_products} columns={columns} />
-        </Card>
+          }}
+        />
+        <div style={{ width: 'fit-content' }}>
+          <Card title='All products'>
+            <Select
+              placeholder='Filter by category'
+              style={{ width: '200px' }}
+              onChange={e => {
+                setActiveCategory(e)
+              }}>
+              <Option value=''>All</Option>
+              {categories.map(s => (
+                <Option value={s}>{s}</Option>
+              ))}
+            </Select>
+            <Table dataSource={active_products} columns={columns} />
+          </Card>
+        </div>
       </div>
-    </div>
+      {edited_product_id && (
+        <div
+          style={{
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: '100',
+            display: 'grid',
+            placeItems: 'center',
+            backdropFilter: 'blur(4px)',
+            backgroundColor: '#22222222',
+          }}>
+          <ProductsForm
+            header='Edit product'
+            button='Edit'
+            onCancel={() => {
+              setEditedProductId('')
+            }}
+            product={edited_product}
+            onSubmit={async product => {
+              try {
+                console.log(product);
+                
+                await updateProduct(product, edited_product_id)
+                await fetchProducts()
+                message.success('Product created')
+              } catch (err) {
+                if (axios.isAxiosError(err)) {
+                  String(err.response?.data)
+                    .split(',')
+                    .forEach(msg => message.error(msg))
+                }
+              }
+            }}
+          />
+        </div>
+      )}
+    </>
   )
 }
 

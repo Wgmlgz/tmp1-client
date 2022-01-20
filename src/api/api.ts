@@ -100,3 +100,40 @@ export const createProduct = (product: IProduct) => {
   fd.append('videos', JSON.stringify(product.videos))
   return axios.post(`${products_url}`, fd, config)
 }
+
+export const updateProduct = (product: IProduct, id: string) => {
+  const config = { headers: { 'Content-Type': 'multipart/form-data' } }
+  let fd = new FormData()
+
+  if (product.imgs) {
+    Array.from(product.imgs).forEach(file => fd.append('imgs', file))
+  }
+
+  ;[
+    'type',
+    'category',
+    'article',
+    'name',
+    'description',
+    'buy_price',
+    'delivery_price',
+    'height',
+    'length',
+    'width',
+    'weight',
+    'brand',
+    'count',
+    'address',
+    'provider',
+  ].forEach(field => {
+    // @ts-ignore
+    if (product.hasOwnProperty(field) && product[field] !== undefined) {
+      // @ts-ignore
+      fd.append(field, product[field])
+    }
+  })
+
+  fd.append('tags', JSON.stringify(product.tags))
+  fd.append('videos', JSON.stringify(product.videos))
+  return axios.patch(`${products_url}/${id}`, fd, config)
+}
