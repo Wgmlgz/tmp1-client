@@ -169,7 +169,7 @@ const Products = () => {
                 
                 await updateProduct(product, edited_product_id)
                 await fetchProducts()
-                message.success('Product created')
+                message.success('Product updated')
               } catch (err) {
                 if (axios.isAxiosError(err)) {
                   String(err.response?.data)

@@ -67,6 +67,7 @@ const ProductsForm: FC<Props> = ({
   const [categories, setCategories] = useState<string[]>([])
 
   const input_tags_ref = useRef<Input>(null)
+  const input_imgs_ref = useRef<Input>(null)
 
   const fetchCategories = async () => {
     const categories_res = await getCategories()
@@ -120,10 +121,9 @@ const ProductsForm: FC<Props> = ({
         address,
         provider,
       }
+      console.log(imgs)
+
       onSubmit(product)
-      // console.log(product)
-      // await createProduct(product)
-      // message.success('Product created')
     } catch (err) {
       if (axios.isAxiosError(err)) {
         String(err.response?.data)
@@ -196,11 +196,8 @@ const ProductsForm: FC<Props> = ({
                   accept='.png, .jpg, .jpeg'
                   name='imgs'
                   multiple
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const imgs_ = e.target.files
-                    if (!imgs_) return
-                    setImgs(imgs)
-                  }}
+                  ref={input_imgs_ref}
+                  onChange={e => e.target.files && setImgs(e.target.files)}
                 />
               </Form.Item>
               <Form.Item label='Youtube video 1' name='yt1'>
@@ -313,9 +310,7 @@ const ProductsForm: FC<Props> = ({
           </Form.Item>
           <Form.Item>
             {onCancel && (
-              <Button
-                style={{ width: '100%' }}
-                onClick={onCancel}>
+              <Button style={{ width: '100%' }} onClick={onCancel}>
                 Cancel
               </Button>
             )}
