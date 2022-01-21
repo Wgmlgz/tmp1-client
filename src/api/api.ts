@@ -88,6 +88,8 @@ export const createProduct = (product: IProduct) => {
     'count',
     'address',
     'provider',
+    'mark',
+    'country',
   ].forEach(field => {
     // @ts-ignore
     if (product.hasOwnProperty(field) && product[field] !== undefined) {
@@ -125,6 +127,8 @@ export const updateProduct = (product: IProduct, id: string) => {
     'count',
     'address',
     'provider',
+    'mark',
+    'country',
   ].forEach(field => {
     // @ts-ignore
     if (product.hasOwnProperty(field) && product[field] !== undefined) {

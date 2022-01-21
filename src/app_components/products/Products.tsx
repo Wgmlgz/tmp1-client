@@ -52,8 +52,6 @@ const Products = () => {
     fetchProducts()
   }, [])
 
-
-  
   const columns: ColumnsType<IProductFull> = [
     {
       title: 'Image',
@@ -165,8 +163,6 @@ const Products = () => {
             product={edited_product}
             onSubmit={async product => {
               try {
-                console.log(product);
-                
                 await updateProduct(product, edited_product_id)
                 await fetchProducts()
                 message.success('Product updated')

@@ -38,6 +38,8 @@ export interface IProduct {
   count?: number
   provider?: string
   address?: string
+  mark?: string
+  country?: string
   user_creator_id?: string
   changed?: Date
   user_changed_id?: string
@@ -95,6 +97,8 @@ const ProductsForm: FC<Props> = ({
     type,
     weight,
     width,
+    mark,
+    country,
     yt1,
     yt2,
     yt3,
@@ -120,6 +124,8 @@ const ProductsForm: FC<Props> = ({
         count,
         address,
         provider,
+        mark,
+        country,
       }
       console.log(imgs)
 
@@ -276,6 +282,7 @@ const ProductsForm: FC<Props> = ({
                 name='weight'
                 rules={[{ required: true, message: 'Please input weight!' }]}>
                 <InputNumber
+                  addonAfter='g'
                   defaultValue={product?.weight}
                   placeholder='Weight'
                 />
@@ -299,6 +306,12 @@ const ProductsForm: FC<Props> = ({
               </Form.Item>
               <Form.Item label='Address' name='address'>
                 <Input defaultValue={product?.address} placeholder='Address' />
+              </Form.Item>
+              <Form.Item label='Mark' name='mark'>
+                <Input defaultValue={product?.mark} placeholder='Mark' />
+              </Form.Item>
+              <Form.Item label='Country' name='country'>
+                <Input defaultValue={product?.country} placeholder='country' />
               </Form.Item>
             </Panel>
           </Collapse>

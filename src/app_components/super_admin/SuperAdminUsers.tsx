@@ -1,4 +1,4 @@
-import { Alert, Card, Checkbox, message, Table } from 'antd'
+import { Card, Checkbox, message, Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import axios from 'axios'
 import React, { FC, useEffect, useState } from 'react'
@@ -42,6 +42,7 @@ const SuperAdminUsers: FC = () => {
         <div>
           <Checkbox
             checked={record.admin}
+            disabled={record.super_admin}
             onChange={async e => {
               try {
                 const new_admin = e.target.checked
